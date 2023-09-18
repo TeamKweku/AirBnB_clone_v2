@@ -118,14 +118,14 @@ class HBNBCommand(cmd.Cmd):
         if not args:
             print("** class name missing **")
             return
-        
+
         args_list = args.split()
         class_name = args_list[0]
 
         if class_name not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        
+
         kwargs = {}
         for item in args_list[1:]:
             param = item.split('=')
@@ -133,8 +133,8 @@ class HBNBCommand(cmd.Cmd):
                 key = param[0]
                 value = param[1].replace('_', ' ').replace('"', '').replace('\\', '')
 
-                if '.' in value:
-                    value = float(value)
+                if '.' in value and (type(value) is int or type(value) is str):
+                    value = float(value) if type(value) is float else pass
                 else:
                     try:
                         value = int(value)
