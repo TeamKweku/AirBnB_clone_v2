@@ -131,7 +131,10 @@ class HBNBCommand(cmd.Cmd):
             param = item.split('=')
             if len(param) == 2:
                 key = param[0]
-                value = param[1].replace('_', ' ').replace('"', '').replace('\\', '')
+                value = (
+                    param[1].replace('_', ' ')
+                    .replace('"', '').replace('\\', '')
+                )
 
                 if '.' in value and (type(value) is int or type(value) is str):
                     value = float(value) if type(value) is float else value
@@ -339,6 +342,7 @@ class HBNBCommand(cmd.Cmd):
         """ Help information for the update class """
         print("Updates an object with new information")
         print("Usage: update <className> <id> <attName> <attVal>\n")
+
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
