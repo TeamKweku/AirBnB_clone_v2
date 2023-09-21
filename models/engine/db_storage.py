@@ -45,14 +45,14 @@ class DBStorage:
         """Query on the current database session"""
         obj_dict = {}
 
-        if cls in self.classes.keys():
+        if cls in classes.keys():
             for row in self.__session.query(cls).all():
-                cls_name = self.classes[cls].__name__
+                cls_name = classes[cls].__name__
                 key = f"{cls_name}.{row.id}"
                 obj_dict[key] = row
         else:
             table_rows = []
-            for key, value in self.classes.items():
+            for key, value in classes.items():
                 table_rows.append(self.__session.query(value).all())
             for rows in table_rows:
                 for row in rows:
