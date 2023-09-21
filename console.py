@@ -3,7 +3,7 @@
 import cmd
 import sys
 from models.base_model import BaseModel
-from models.__init__ import storage
+from models import storage
 from models.user import User
 from models.place import Place
 from models.state import State
@@ -131,19 +131,34 @@ class HBNBCommand(cmd.Cmd):
             param = item.split('=')
             if len(param) == 2:
                 key = param[0]
-                value = (
-                    param[1].replace('_', ' ')
-                    .replace('"', '').replace('\\', '')
-                )
-
-                if '.' in value and (type(value) is int or type(value) is str):
-                    value = float(value) if type(value) is float else value
+                value = param[1]
+                if value.isdigit():
+                    kwargs[key] = int(value)
                 else:
                     try:
-                        value = int(value)
+                        kwargs[key] = float(value)
                     except ValueError:
-                        pass
-                kwargs[key] = value
+                        value = (
+                            param[1].replace('_', ' ')
+                            .replace('"', '').replace('\\', '').replace("'", '')
+                        )
+                        kwargs[key] = value
+
+                # if type(value) is str:
+                #    kwargs[key] = vlaue
+                # elif type(value) is float:
+                #    kwargs[key]
+                # if '.' in str_val: #  and (type(value) is int or type(value) is str):
+                #    try:
+                #        value = float(str_val) # if type(value) is float else value
+                #    except ValueError:
+                #        pass
+                # else:
+                #    try:
+                #        value = int(value)
+                #    except ValueError:
+                #        pass
+                # kwargs[key] = value
         new_instance = HBNBCommand.classes[class_name](**kwargs)
         storage.new(new_instance)
         new_instance.save()
@@ -178,7 +193,7 @@ class HBNBCommand(cmd.Cmd):
 
         key = c_name + "." + c_id
         try:
-            print(storage._FileStorage__objects[key])
+            print(storage.all()[key])
         except KeyError:
             print("** no instance found **")
 
@@ -229,11 +244,11 @@ class HBNBCommand(cmd.Cmd):
             if args not in HBNBCommand.classes:
                 print("** class doesn't exist **")
                 return
-            for k, v in storage._FileStorage__objects.items():
+            for k, v in storage.all().items():
                 if k.split('.')[0] == args:
                     print_list.append(str(v))
         else:
-            for k, v in storage._FileStorage__objects.items():
+            for k, v in storage.all().items():
                 print_list.append(str(v))
 
         print(print_list)
@@ -246,7 +261,7 @@ class HBNBCommand(cmd.Cmd):
     def do_count(self, args):
         """Count current number of class instances"""
         count = 0
-        for k, v in storage._FileStorage__objects.items():
+        for k, v in storage.all().items():
             if args == k.split('.')[0]:
                 count += 1
         print(count)
