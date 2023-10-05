@@ -8,6 +8,7 @@ import os
 
 env.hosts = ["18.206.202.36", "100.26.160.231"]
 
+
 def do_pack():
     """a function that generates a .tgz archieve"""
     if not os.path.exists("versions"):
@@ -26,6 +27,7 @@ def do_pack():
         return archieve_path
 
 
+@runs_once
 def do_deploy(archive_path):
     """function that deploys and archieve to connected web servers"""
     if not os.path.exists(archive_path):
