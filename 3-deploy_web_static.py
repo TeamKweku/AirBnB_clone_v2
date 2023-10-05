@@ -8,7 +8,6 @@ import os
 
 env.hosts = ["18.206.202.36", "100.26.160.231"]
 
-@runs_once
 def do_pack():
     """a function that generates a .tgz archieve"""
     if not os.path.exists("versions"):
