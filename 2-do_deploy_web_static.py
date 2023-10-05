@@ -17,7 +17,7 @@ def do_deploy(archive_path):
         put(archive_path, "/tmp/")
 
         filename = os.path.basename(archive_path)
-        archive_name = os.path.splitext(filename)[0]
+        archive_name = filename.split(".")[0]
 
         path = f"/data/web_static/releases/{archive_name}"
 
@@ -27,6 +27,8 @@ def do_deploy(archive_path):
         run(f"tar -xzf /tmp/{filename} -C {path}")
         # remove tar file from server
         run(f"rm /tmp/{filename}")
+
+        run(f"mv {path}/web_static/* {path}")
         # Remove the existing symbolic link
         run("rm -rf /data/web_static/current")
 
