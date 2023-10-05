@@ -19,21 +19,21 @@ def do_deploy(archive_path):
         filename = os.path.basename(archive_path)
         archive_name = filename.split(".")[0]
 
-        path = f"/data/web_static/releases/{archive_name}"
+        path = "/data/web_static/releases/{}".format(archive_name)
 
         # create the directory
-        run(f"mkdir -p {path}")
+        run("mkdir -p {}".format(path))
         # unarchieve into the stated path
-        run(f"tar -xzf /tmp/{filename} -C {path}")
+        run("tar -xzf /tmp/{} -C {}".format(filename, path))
         # remove tar file from server
-        run(f"rm /tmp/{filename}")
+        run("rm /tmp/{}".format(filename))
 
-        run(f"mv {path}/web_static/* {path}")
+        run("mv {}/web_static/* {}".format(path, path))
         # Remove the existing symbolic link
         run("rm -rf /data/web_static/current")
 
         # Create a new symbolic link
-        run(f"ln -s {path} /data/web_static/current")
+        run("ln -s {} /data/web_static/current".format(path))
 
         print("New version deployed!")
         return True
