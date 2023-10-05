@@ -55,14 +55,6 @@ file { '/data/web_static/current':
   target => '/data/web_static/releases/test',
 }
 
-exec { 'set_ownership_and_permissions':
-  command => '/bin/chown -R ubuntu:ubuntu /data/',
-  require => [
-    Exec['create_web_static_directories'],
-    File['/data/web_static/current'],
-  ],
-}
-
 # Start nginx service
 service { 'nginx':
   ensure  => running,
