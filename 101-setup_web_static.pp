@@ -1,63 +1,31 @@
 # puppet file that sets up webservers for the deployment of web_static
 
-# Update system
-exec { 'update system':
+exec { 'Update package repository':
   command => '/usr/bin/apt-get update',
 }
-
-# Install nginx server
-package { 'nginx':
-  ensure  => 'installed',
-  require => Exec['update system']
+-> package { 'nginx':
+  ensure => installed,
 }
-
-# Create parent directories using mkdir -p
-exec { 'create_web_static_directories':
-  command => '/bin/mkdir -p /data/web_static/releases/test /data/web_static/shared',
+-> exec { 'Create web_static directories':
+  command => '/usr/bin/mkdir -p "/data/web_static/releases/test/" "/data/web_static/shared/"',
 }
-
-# Create a fake HTML file for testing
-file { '/data/web_static/releases/test/index.html':
-  content => '<html>
-  <head>
-  </head>
-  <body>
-    Holberton School
-  </body>
-</html>',
+-> exec { 'Create index.html file':
+  command => '/usr/bin/echo "Hi!" | sudo tee /data/web_static/releases/test/index.html > /dev/null',
 }
-
-# Update Nginx configuration
-file { '/etc/nginx/sites-available/default':
-  ensure  => present,
-  content => "server {
-      listen 80 default_server;
-      server_name _;
-
-      location /hbnb_static {
-          alias /data/web_static/current/;
-      }
-
-      # Add custom HTTP headers
-      add_header X-Served-By '"$hostname"';
-
-      # Redirect 301 Moved Permanently
-      location /redirect_me {
-          rewrite ^/redirect_me https://www.youtube.com/watch?v=xJJsoquu70o/ permanent;
-      }
-  }",
-  require => Package['nginx'],
+-> exec { 'Remove current directory':
+  command => '/usr/bin/rm -rf /data/web_static/current',
 }
-
-# Create symbolic link
-file { '/data/web_static/current':
-  ensure => link,
-  target => '/data/web_static/releases/test',
+-> exec { 'Create symbolic link':
+  command => '/usr/bin/ln -s /data/web_static/releases/test/ /data/web_static/current',
 }
-
-# Start nginx service
-service { 'nginx':
-  ensure  => running,
-  require => [Package['nginx'], Exec['create_web_static_directories'], File['/data/web_static/current']],
+-> exec { 'Change ownership of directories':
+  command => '/usr/bin/chown -R ubuntu:ubuntu /data/',
+}
+-> exec { 'Configure Nginx for hbnb_static':
+  command  => 'sudo sed -i "/^server {/a \ \n\tlocation \/hbnb_static {alias /data/web_static/current/;index index.html;}" /etc/nginx/sites-enabled/default',
+  provider => shell,
+}
+-> exec { 'Restart Nginx service':
+  command => '/usr/sbin/service nginx restart',
 }
 
