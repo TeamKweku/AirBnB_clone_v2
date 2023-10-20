@@ -1,12 +1,12 @@
 #!/usr/bin/python3
 """create and distribute an archive to your web servers,
 using the function do_deploy"""
-from fabric.api import *
-from datetime import datetime
 import os
+from datetime import datetime
 
+from fabric.api import *
 
-env.hosts = ["18.206.202.36", "100.26.160.231"]
+env.hosts = ["34.207.237.135", "54.146.62.81"]
 
 
 def do_pack():

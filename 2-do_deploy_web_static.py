@@ -1,10 +1,12 @@
 #!/usr/bin/python3
 """distributing an archive to your web servers, using the function do_deploy"""
-from fabric.api import *
 import os
+
+from fabric.api import *
+
 # import sys
 
-env.hosts = ['18.206.202.36', '100.26.160.231']
+env.hosts = ["34.207.237.135", "54.146.62.81"]
 # env.user = 'ubuntu'
 
 
