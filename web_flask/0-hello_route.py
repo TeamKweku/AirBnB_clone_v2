@@ -1,5 +1,7 @@
 #!/usr/bin/python3
-""" a python flask script that prints a route when using curl"""
+"""flask script that prints a route when using curl"""
+
+
 from flask import Flask
 
 app = Flask(__name__)
@@ -12,5 +14,4 @@ def hello():
 
 
 if __name__ == "__main__":
-    """start the flask app on port 50000 for all hosts"""
     app.run(host="0.0.0.0", port=5000)
