@@ -1,23 +1,25 @@
 #!/usr/bin/python3
 """module that defines a class to handle db storage for hbnb"""
 import os
-from sqlalchemy import create_engine, MetaData
-from sqlalchemy.orm import sessionmaker, scoped_session
+
+from sqlalchemy import MetaData, create_engine
+from sqlalchemy.orm import scoped_session, sessionmaker
+
+from models.amenity import Amenity
 from models.base_model import Base
 from models.city import City
 from models.place import Place
 from models.review import Review
 from models.state import State
 from models.user import User
-from models.amenity import Amenity
 
 classes = {
-    'State': State,
-    'City': City,
-    'User': User,
-    'Review': Review,
-    'Amenity': Amenity,
-    'Place': Place
+    "State": State,
+    "City": City,
+    "User": User,
+    "Review": Review,
+    "Amenity": Amenity,
+    "Place": Place,
 }
 
 
@@ -34,9 +36,8 @@ class DBStorage:
         host = os.environ.get("HBNB_MYSQL_HOST")
         db = os.environ.get("HBNB_MYSQL_DB")
         self.__engine = create_engine(
-            f'mysql+mysqldb://{user}:{pwd}@{host}/{db}',
-            pool_pre_ping=True
-            )
+            f"mysql+mysqldb://{user}:{pwd}@{host}/{db}", pool_pre_ping=True
+        )
 
         if os.environ.get("HBNB_ENV") == "test":
             Base.metadata.drop_all(self.__engine)
@@ -81,3 +82,7 @@ class DBStorage:
         Session = sessionmaker(bind=self.__engine, expire_on_commit=False)
         sessions = scoped_session(Session)
         self.__session = sessions()
+
+    def close(self):
+        """Adding a close method"""
+        self.__session.close()
